@@ -25,5 +25,35 @@ def getMelFreq(df, data):
     return df
 
 
-def tester():
-    return "help"
+def getZCR(df, data):
+    zcrList = []
+    for sound in data:
+        signal, sample_rate = librosa.load(sound)
+        zcr = librosa.feature.zero_crossing_rate(y=signal)
+        zcrList.append(zcr[0])
+    df["ZCR"] = zcrList
+    return df
+
+
+def getChroma(df, data):
+    chroma = dict()
+    for sound in data:
+        signal, sample_rate = librosa.load(sound)
+        chromagram = librosa.feature.chroma_stft(y=signal, sr=sample_rate)
+        for n_chroma in range(len(chromagram)):
+            chroma['Chroma_%d' % (n_chroma + 1)] = chromagram.T[n_chroma]
+    df_chroma = pd.DataFrame(chroma)
+    df = pd.concat([df, df_chroma], axis=1)
+    return df
+
+
+def getMelSpect(df, data):
+    mel_spectrogramList = dict()
+    for sound in data:
+        signal, sample_rate = librosa.load(sound)
+        mel_spectrogram = librosa.feature.melspectrogram(y=signal, sr=sample_rate, n_mels=12)
+        for n_mel in range(len(mel_spectrogram)):
+            mel_spectrogramList['Mel_Spectrogram_%d' % (n_mel + 1)] = mel_spectrogram.T[n_mel]
+    df_mel_spectrogram = pd.DataFrame(mel_spectrogramList)
+    df = pd.concat([df, df_mel_spectrogram], axis=1)
+    return df
