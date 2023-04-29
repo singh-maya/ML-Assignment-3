@@ -1,5 +1,6 @@
 /data_folder
 /env
-.venv
+/venv
 .idea
 __pycache__
+.ipynb_checkpoints
